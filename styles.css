@@ -125,3 +125,17 @@ body.compact .debug-grid{ gap:8px }
 body.compact .debug input{ width:70px; padding:4px 6px }
 /* 考え中バブルは少し薄く */
 .bubble.thinking{ opacity:.8; font-style:italic }
+
+/* ===== 選択肢 ===== */
+.choices{
+  display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-top:8px;
+}
+.choices button{
+  padding:10px; border-radius:10px; border:1px solid #233650;
+  background:#192538; color:#e8eef8; cursor:pointer; font-weight:700;
+  transition:transform .06s ease, box-shadow .06s ease, background .2s;
+}
+.choices button:hover{ transform:translateY(-1px); box-shadow:0 8px 20px rgba(0,0,0,.25) }
+
+/* Compact調整 */
+body.compact .choices button{ padding:8px; font-size:14px }

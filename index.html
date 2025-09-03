@@ -36,6 +36,10 @@
 
             <div class="dialog">
                 <div id="log" class="log"></div>
+
+                <!-- 追加：選択肢ボタンの置き場 -->
+                <div id="choices" class="choices" hidden></div>
+
                 <div class="inputRow">
                     <button id="clearLog" class="secondary">ログ消去</button>
                 </div>
@@ -74,8 +78,28 @@
         <small>会話文は <code>data/dialogues.json</code> を編集してください。</small>
     </footer>
 
-    <script src="data/dialogues.js"></script>
+    <script src="data/dialogues.builder.js"></script>
+    <script src="data/packs.manifest.js"></script>
+    <script>
+        (function () {
+            const files = (window.DIALOGUE_PACK_FILES || []);
+            const load = (src) => new Promise((res, rej) => {
+                const s = document.createElement('script');
+                s.src = src;
+                s.onload = res;
+                s.onerror = () => rej(new Error('Failed to load ' + src));
+                document.body.appendChild(s);
+            });
+            (async () => {
+                for (const f of files) await load(f);     // packs を順次ロード
+                // ← packs 読み込み完了の合図（イベント）
+                window.dispatchEvent(new Event('dialogue-packs-ready'));
+            })();
+        })();
+    </script>
+
     <script src="js/main.js"></script>
+
 </body>
 
 </html>
