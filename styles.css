@@ -1,0 +1,125 @@
+:root{
+  --bg:#0f1115; --panel:#171a21; --panel2:#1d212a; --text:#e8eef8; --muted:#a7b0c2;
+  --accent:#7aa2ff; --accent2:#ffd166; --good:#6ee7b7; --bad:#f87171;
+}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{
+  margin:0; font-family:system-ui, -apple-system, "Segoe UI", Meiryo, sans-serif;
+  color:var(--text); background:linear-gradient(180deg,#0e1016 0%,#0b0d12 100%);
+}
+.topbar{
+  display:flex; align-items:center; justify-content:space-between;
+  padding:10px 16px; background:var(--panel); border-bottom:1px solid #222835;
+}
+.brand{font-weight:700; letter-spacing:0.5px}
+.status{display:flex; gap:24px; align-items:center}
+.meter label{font-size:12px; color:var(--muted)}
+.meter .bar{width:240px; height:8px; background:#202633; border-radius:999px; overflow:hidden; margin:4px 0}
+#affectionBar{height:100%; width:0%; background:linear-gradient(90deg,#5ad1ff,#7aa2ff); transition:width .2s}
+.tier{color:var(--muted)}
+.tension label{font-size:12px; color:var(--muted)}
+.badge{padding:4px 10px; border-radius:999px; font-weight:700;}
+.badge-low{background:#2a1d2b; color:#ff79a1}
+.badge-mid{background:#1c2430; color:#7aa2ff}
+.badge-high{background:#1c2a22; color:#5ae0a2}
+
+.layout{
+  display:grid; grid-template-columns: 360px 1fr; gap:16px; padding:16px;
+}
+.portrait{
+  background:var(--panel); border:1px solid #222835; border-radius:14px;
+  display:flex; align-items:center; justify-content:center; padding:12px;
+}
+.portrait img{max-width:100%; border-radius:10px; box-shadow:0 12px 40px rgba(0,0,0,.35)}
+
+.ui{display:flex; flex-direction:column; gap:16px}
+.buttons{
+  display:grid; grid-template-columns:repeat(3,1fr); gap:10px;
+}
+.buttons button{
+  padding:14px 10px; border-radius:12px; border:1px solid #23293a;
+  background:var(--panel2); color:var(--text); cursor:pointer; font-weight:700;
+  transition:transform .06s ease, box-shadow .06s ease, background .2s;
+}
+.buttons button:hover{transform:translateY(-1px); box-shadow:0 8px 20px rgba(0,0,0,.25)}
+.buttons button:active{transform:translateY(0)}
+.dialog{
+  background:var(--panel); border:1px solid #222835; border-radius:14px; padding:12px;
+}
+.log{
+  height:260px; overflow:auto; padding:8px; background:#0f141c; border-radius:8px; border:1px solid #202636;
+}
+.bubble{padding:8px 10px; margin:8px 0; border-radius:10px; width:max-content; max-width:100%}
+.user{background:#192538; border:1px solid #233650}
+.npc{background:#1a2a1f; border:1px solid #25422e}
+.system{background:#2a2333; border:1px solid #3b2f4b}
+.meta{color:var(--muted); font-size:12px}
+.inputRow{display:flex; justify-content:flex-end; margin-top:8px; gap:8px}
+button.secondary{background:#11161f; border-color:#2a3448; color:#cfd7e7}
+button.danger{background:#2a1616; border-color:#4c2626; color:#ffb4b4}
+
+.debug{background:var(--panel); border:1px solid #222835; border-radius:14px; padding:10px}
+.debug-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:10px}
+.debug .row{display:flex; gap:6px; align-items:center}
+.debug input{width:80px; padding:6px 8px; border-radius:8px; border:1px solid #30384a; background:#0e1420; color:#e8eef8}
+.footer, .foot{padding:8px 16px; color:var(--muted); text-align:center}
+/* 絵文字ボタン */
+.buttons button.iconbtn{
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+  gap:6px; padding-block:18px; font-weight:700; text-align:center;
+}
+.buttons .emoji{ font-size:28px; line-height:1; }
+.buttons .label{ font-size:14px; opacity:.95; }
+
+/* 画面幅広めなら少し大きく */
+@media (min-width: 720px){
+  .buttons .emoji{ font-size:34px; }
+}
+
+/* （任意）テキストを隠して絵文字だけにしたい時 */
+.icon-only .buttons .label{ display:none; }
+
+/* ===== Compact Mode (1024x768想定) ===== */
+body.compact { /* 画面が広くても詰めて表示 */
+  max-width: 1024px;
+  margin: 0 auto;
+}
+
+body.compact .topbar{
+  padding:6px 12px;
+}
+body.compact .status{ gap:16px }
+body.compact .meter .bar{ width:180px; height:6px }
+body.compact .badge{ padding:2px 8px; font-size:12px }
+
+body.compact .layout{
+  grid-template-columns: 280px 1fr;
+  gap:12px;
+  padding:12px;
+}
+body.compact .portrait{ padding:8px; border-radius:10px }
+body.compact .portrait img{ border-radius:8px }
+
+body.compact .buttons{
+  gap:8px;
+  grid-template-columns: repeat(3, 1fr);
+}
+body.compact .buttons button{
+  padding:10px 8px;
+  border-radius:10px;
+}
+body.compact .buttons .emoji{ font-size:22px }
+body.compact .buttons .label{ font-size:12px }
+
+body.compact .dialog{ padding:10px; border-radius:10px }
+body.compact .log{
+  height:170px;            /* 260→170に圧縮 */
+  padding:6px;
+}
+body.compact .bubble{ padding:6px 8px; margin:6px 0 }
+body.compact .meta{ font-size:11px }
+
+body.compact .debug{ padding:8px; border-radius:10px }
+body.compact .debug-grid{ gap:8px }
+body.compact .debug input{ width:70px; padding:4px 6px }

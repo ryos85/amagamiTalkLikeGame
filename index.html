@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="ja">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>アマガミ風・会話デモ</title>
+    <link rel="stylesheet" href="styles.css" />
+</head>
+
+<body class="compact">
+    <header class="topbar">
+        <div class="brand">会話デモ</div>
+        <div class="status">
+            <div class="meter">
+                <label>好感度 <span id="affectionLabel">0</span> / 255</label>
+                <div class="bar">
+                    <div id="affectionBar"></div>
+                </div>
+                <small class="tier" id="tierLabel">普通</small>
+            </div>
+            <div class="tension">
+                <label>テンション</label>
+                <span id="tensionBadge" class="badge badge-mid">Mid</span>
+            </div>
+        </div>
+    </header>
+
+    <main class="layout">
+        <section class="portrait">
+            <img id="portrait" src="assets/girl_mid.png" alt="girl" />
+        </section>
+
+        <section class="ui">
+            <div class="buttons" id="buttons"></div>
+
+            <div class="dialog">
+                <div id="log" class="log"></div>
+                <div class="inputRow">
+                    <button id="clearLog" class="secondary">ログ消去</button>
+                </div>
+            </div>
+
+            <details class="debug">
+                <summary>デバッグ（テスト用）</summary>
+                <div class="debug-grid">
+                    <div>
+                        <label>好感度</label>
+                        <div class="row">
+                            <button data-aff-delta="-10">-10</button>
+                            <button data-aff-delta="-1">-1</button>
+                            <input id="affectionInput" type="number" min="0" max="255" value="0" />
+                            <button data-aff-delta="1">+1</button>
+                            <button data-aff-delta="10">+10</button>
+                        </div>
+                    </div>
+                    <div>
+                        <label>テンション</label>
+                        <div class="row">
+                            <button data-tension="low">Low</button>
+                            <button data-tension="mid">Mid</button>
+                            <button data-tension="high">Hi</button>
+                        </div>
+                    </div>
+                    <div>
+                        <button id="resetState" class="danger">状態リセット</button>
+                    </div>
+                </div>
+            </details>
+        </section>
+    </main>
+
+    <footer class="foot">
+        <small>会話文は <code>data/dialogues.json</code> を編集してください。</small>
+    </footer>
+
+    <script src="data/dialogues.js"></script>
+    <script src="js/main.js"></script>
+</body>
+
+</html>
