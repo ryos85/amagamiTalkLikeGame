@@ -15,8 +15,12 @@ const TYPES = [
   { key: "action",    label: "行動",   icon: "🧭" }
 ];
 
-const CLEAR_LOG_ON_NEW = true;       // 次の会話が始まったらログ消去
-const REPLY_DELAY_MS = 500;          // 女の子の返答に0.5秒の間
+// 設定
+const CLEAR_LOG_ON_NEW = true;
+const REPLY_DELAY_MS   = 1000;                 // ← 0.5s → 1.0s に変更
+const THOUGHT_CHAR     = "…";                 // 表示する点（"…" にしてもOK）
+const THOUGHT_DOT_INTERVAL_MS = Math.floor(REPLY_DELAY_MS / 3);
+
 
 // テンション3段階
 const TENSIONS = ["low", "mid", "high"];
@@ -25,7 +29,8 @@ const TENSIONS = ["low", "mid", "high"];
 const state = {
   affection: 0,                // 0..255
   tension: "mid",              // "low" | "mid" | "high"
-  data: null                   // dialogues.json
+  data: null,                   // dialogues.json
+  busy: false
 };
 
 // ====== ユーティリティ ======
@@ -100,6 +105,57 @@ function format(str, vars){
 
 const sleep = (ms) => new Promise(res => setTimeout(res, ms));
 
+// 発話バリエーションから1つ選ぶ（配列 or "A|B|C" 文字列に対応）
+function chooseVariant(text){
+  if (Array.isArray(text)) return text[Math.floor(Math.random()*text.length)];
+  if (typeof text === "string" && text.includes("|")){
+    const parts = text.split("|").map(s=>s.trim()).filter(Boolean);
+    return parts[Math.floor(Math.random()*parts.length)];
+  }
+  return text;
+}
+
+// スクリプト（会話の応酬）を順に実行
+async function runScript(steps){
+  for (const step of steps){
+    const who = step.who || "girl";   // 省略時は女の子扱い
+    const raw  = chooseVariant(step.text ?? "");
+    const line = format(String(raw), { name: PLAYER_NAME });
+
+    if (who === "girl"){
+      // 考え中アニメ（デフォルトは REPLY_DELAY_MS。個別 delayMs 指定可）
+      await showThinking(typeof step.delayMs === "number" ? step.delayMs : REPLY_DELAY_MS);
+      pushLog("npc", line);
+    } else if (who === "player"){
+      pushLog("user", line);
+    } else {
+      pushLog("system", line);
+    }
+
+    if (step.effect) applyEffect(step.effect);
+    if (typeof step.sleepMs === "number") await sleep(step.sleepMs); // 追いウェイト任意
+  }
+}
+
+// ログ欄に「考え中」のバブルを出して、duration後に消す
+async function showThinking(durationMs){
+  const bubble = el("div", "bubble npc thinking");
+  const span = el("span", "", THOUGHT_CHAR);         // ・
+  bubble.appendChild(span);
+  $("#log").appendChild(bubble);
+  $("#log").scrollTop = $("#log").scrollHeight;
+
+  let count = 1;
+  const timer = setInterval(()=>{
+    count = (count % 3) + 1;                         // 1→2→3
+    span.textContent = THOUGHT_CHAR.repeat(count);   // ・ / ・・ / ・・・
+  }, THOUGHT_DOT_INTERVAL_MS);
+
+  await sleep(durationMs);
+  clearInterval(timer);
+  bubble.remove();                                    // 消してから本セリフ
+}
+
 
 // ====== 会話エンジン ======
 async function loadData(){
@@ -130,34 +186,33 @@ function getPool(typeKey){
   return null;
 }
 async function handleTalk(typeKey, label){
-  // ① 新しい会話が始まるときにログを消す
-  if (CLEAR_LOG_ON_NEW) { $("#log").innerHTML = ""; }
+  if (state.busy) return;
+  state.busy = true;
+  try{
+    if (CLEAR_LOG_ON_NEW) $("#log").innerHTML = "";
 
-  const pool = getPool(typeKey);
-  if (!pool){
-    pushLog("system", `「${label}」の会話データが見つかりません。<br><code>data/dialogues.json</code> か <code>data/dialogues.js</code> に追記してください。`);
-    return;
+    const pool = getPool(typeKey);
+    if (!pool){ pushLog("system", `「${label}」の会話データが見つかりません。`); return; }
+    const item = pickWeighted(pool);
+    if (!item){ pushLog("system", `「${label}」にパターンがありません。`); return; }
+
+    // --- 新: script があれば応酬会話を実行 ---
+    if (Array.isArray(item.script) && item.script.length){
+      await runScript(item.script);
+      return;
+    }
+
+    // --- 互換: 旧式（1往復） ---
+    const pText = format(item.player || `(${label})`, { name: PLAYER_NAME });
+    pushLog("user", pText);
+    await showThinking(REPLY_DELAY_MS);
+    const reply = chooseVariant(item.girl ?? "……");
+    const gText = format(reply, { name: PLAYER_NAME });
+    pushLog("npc", gText);
+    applyEffect(item.effect);
+  } finally {
+    state.busy = false;
   }
-  const item = pickWeighted(pool);
-  if (!item){
-    pushLog("system", `「${label}」にパターンがありません。`);
-    return;
-  }
-
-  // プレイヤー発話
-  const pText = format(item.player || `(${label})`, { name: PLAYER_NAME });
-  pushLog("user", pText);
-
-  // ② 考える間（0.5秒）
-  await sleep(REPLY_DELAY_MS);
-
-  // 女の子返答
-  const reply = Array.isArray(item.girl) ? item.girl[Math.floor(Math.random()*item.girl.length)] : item.girl;
-  const gText = format(reply || "……", { name: PLAYER_NAME });
-  pushLog("npc", gText);
-
-  // 効果
-  applyEffect(item.effect);
 }
 
 // ====== UI 構築 ======

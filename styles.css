@@ -123,3 +123,5 @@ body.compact .meta{ font-size:11px }
 body.compact .debug{ padding:8px; border-radius:10px }
 body.compact .debug-grid{ gap:8px }
 body.compact .debug input{ width:70px; padding:4px 6px }
+/* 考え中バブルは少し薄く */
+.bubble.thinking{ opacity:.8; font-style:italic }
