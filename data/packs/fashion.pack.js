@@ -3,7 +3,7 @@
   const { createDialogues } = window.dialogues;
   const D = createDialogues("fashion-pack");
 
-  D.any("fashion", "この服、どう？", "似合ってる|色が好き|大人っぽい");
+  D.any("fashion", "この服、どう？", "似合ってるよ。");
 
   D.script("fashion","mid","friend", [
     D.S.p("今日のコーデ、良いね。"),

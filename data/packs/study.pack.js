@@ -3,7 +3,7 @@
   const { createDialogues } = window.dialogues;
   const D = createDialogues("study-pack");
 
-  D.any("study", "宿題もう終わった？", "まだ半分…|終わったら見直してほしいな");
+  D.any("study", "宿題もう終わった？", "まだ半分…。終わったら連絡するね");
 
   D.script("study","mid","normal", [
     D.S.p("一緒に勉強する？"),

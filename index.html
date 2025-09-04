@@ -13,11 +13,16 @@
         <div class="brand">会話デモ</div>
         <div class="status">
             <div class="meter">
-                <label>好感度 <span id="affectionLabel">0</span> / 255</label>
+                <label class="affectionLabelRow">
+                    <span class="heart" aria-hidden="true">❤️</span>
+                    ドキドキ度 <span id="affectionLabel">0</span> / 255
+                    <span class="tier" id="tierLabel">普通</span>
+                </label>
+
                 <div class="bar">
                     <div id="affectionBar"></div>
                 </div>
-                <small class="tier" id="tierLabel">普通</small>
+                
             </div>
             <div class="tension">
                 <label>テンション</label>
@@ -46,6 +51,7 @@
 
                 <div class="inputRow">
                     <button id="clearLog" class="secondary">ログ消去</button>
+                    <button id="resetState" class="danger">状態リセット</button>
                 </div>
             </div>
 
@@ -71,15 +77,30 @@
                         </div>
                     </div>
                     <div>
-                        <button id="resetState" class="danger">状態リセット</button>
+                        <label>プレイヤー名</label>
+                        <div class="row">
+                            <input id="playerNameInput" type="text" maxlength="16" placeholder="あなた" />
+                            <button id="applyPlayerName">適用</button>
+                        </div>
                     </div>
                 </div>
             </details>
         </section>
     </main>
 
+    <!-- 終了オーバーレイ -->
+    <div id="overlay" class="overlay" hidden>
+        <div class="overlay-panel">
+            <h2 id="overlayTitle">ゲームオーバー</h2>
+            <p id="overlayMessage">・・・</p>
+            <div class="overlay-actions">
+                <button id="overlayReset" class="danger">状態リセット</button>
+            </div>
+        </div>
+    </div>
+
     <footer class="foot">
-        <small>会話文は <code>data/dialogues.json</code> を編集してください。</small>
+        <small>会話文は <code>data/packs/*.pack.js</code> を編集してください。</small>
     </footer>
 
     <script src="data/dialogues.builder.js"></script>

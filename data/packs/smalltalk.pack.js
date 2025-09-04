@@ -4,7 +4,7 @@
   const D = createDialogues("smalltalk-pack");
 
   // 汎用の一言
-  D.any("smalltalk", "最近どう？", "ねむ…|まぁまぁ|そこそこかな");
+  D.any("smalltalk", "最近どう？", "そこそこかな");
 
   // 応酬：2往復＋分岐
   D.script("smalltalk","mid","normal", [

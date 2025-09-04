@@ -46,14 +46,17 @@ body{
 }
 .brand{font-weight:700; letter-spacing:.5px}
 .status{display:flex; gap:14px; align-items:center}
+.meter { display:flex; flex-direction:column; gap:6px; }
 .meter label{font-size:12px; color:var(--muted)}
 .meter .bar{width:180px; height:8px; background:#202633; border-radius:999px; overflow:hidden; margin:4px 0}
 #affectionBar{height:100%; width:0%; background:linear-gradient(90deg,#5ad1ff,#7aa2ff); transition:width .2s}
 .tier{color:var(--muted)}
 .badge{padding:2px 8px; border-radius:999px; font-weight:700;}
-.badge-low{background:#2a1d2b; color:#ff79a1}
-.badge-mid{background:#1c2430; color:#7aa2ff}
-.badge-high{background:#1c2a22; color:#5ae0a2}
+/* Tension badge colors */
+.badge-high  { background:#ff4fa3; color:#fff; }   /* Hi: 強めのピンク */
+.badge-mid   { background:#f7c948; color:#222; }   /* Mid: 黄色       */
+.badge-low   { background:#0288d1; color:#fff; }   /* Low: 濃い水色   */
+
 
 .foot{
   display:flex; align-items:center; justify-content:center;
@@ -194,3 +197,43 @@ button.secondary:hover, button.danger:hover{ filter:brightness(1.08) }
 .left-buttons button:disabled .label{
   opacity: .85;
 }
+
+/* === 終了オーバーレイ === */
+.overlay{ position:fixed; inset:0; display:flex; align-items:center; justify-content:center;
+  background:rgba(0,0,0,.55); z-index:9999; }
+.overlay[hidden]{ display:none; }
+.overlay-panel{
+  width:min(420px, 90vw); background:var(--panel); border:1px solid #2a3448;
+  border-radius:16px; padding:20px; text-align:center; box-shadow:0 20px 60px rgba(0,0,0,.5);
+}
+.overlay-panel h2{ margin:0 0 8px; }
+.overlay-panel p{ margin:0; opacity:.95; }
+.overlay-actions{ margin-top:14px; display:flex; gap:10px; justify-content:center; }
+
+/* ドキドキ度バーの微ゆらぎ */
+@keyframes gentle-wobble {
+  from { transform: translateX(-10px); }
+  to   { transform: translateX( 10px); }
+}
+#affectionBar {
+  transform-origin: left center;
+  animation: gentle-wobble 0.9s ease-in-out infinite alternate;
+}
+@media (prefers-reduced-motion: reduce) {
+  #affectionBar { animation: none; }
+}
+
+
+/* ドキドキ度の値で色を切替（JSが aff-bar-* を付与） */
+#affectionBar { background:#f7c948; } /* デフォ：黄色 */
+.aff-bar-red    { background:#ff1744 !important; } /* 255 */
+.aff-bar-pink   { background:#ff4fa3 !important; } /* 180–254 */
+.aff-bar-yellow { background:#f7c948 !important; } /* 51–179 */
+.aff-bar-cyan   { background:#0288d1 !important; } /* 0–50 */
+
+/* ドキドキ度行を横並びにして、ハートをバーの左に固定 */
+.affectionRow { display:flex; align-items:center; gap:8px; }
+.affectionRow .heart { display:inline-block; line-height:1; transform: translateY(1px); }
+.affectionRow .bar { flex: 1 1 auto; } /* ゲージを横に伸ばす */
+.affectionLabel { white-space:nowrap; }
+

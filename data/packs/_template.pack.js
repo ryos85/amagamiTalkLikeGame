@@ -14,10 +14,10 @@
   // - tension:  "low"|"mid"|"high"|"any"
   // - tier:     "normal"|"friend"|"love"|"any"
   // - player:   プレイヤーの一言
-  // - girl:     女の子の返答（配列 or "A|B|C" 区切り文字列もOK）
+  // - girl:     女の子の返答
   // - effect:   { affection:+3, tension:"high"|"+1"|"-1" } など（省略可）
   // - weight:   出やすさ（数値・省略可）
-  D.add("smalltalk","any","any", "テンプレだよ", "はいはい|了解");
+  D.add("smalltalk","any","any", "テンプレだよ", "了解");
 
   // 応酬（複数ターン）を追加：
   // script(type, tension, tier, steps[, weight])

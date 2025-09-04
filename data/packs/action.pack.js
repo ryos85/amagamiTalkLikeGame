@@ -18,7 +18,7 @@
       ]),
       D.S.opt("デートに行く", [
         D.S.p("じゃ、駅前集合で。"),
-        D.S.g("支度する！", { affection:2 })
+        D.S.g("支度する！", { affection:2, clear:true })
       ])
     ])
   ], 2);

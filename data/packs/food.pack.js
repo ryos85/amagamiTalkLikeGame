@@ -3,7 +3,7 @@
   const { createDialogues } = window.dialogues;
   const D = createDialogues("food-pack");
 
-  D.any("food", "何食べたい？", "麺！|ごはん|甘いもの…");
+  D.any("food", "何食べたい？", "麺！");
 
   D.script("food","any","any", [
     D.S.g("今日は…"),
