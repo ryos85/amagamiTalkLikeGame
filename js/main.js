@@ -348,6 +348,7 @@ function getPool(typeKey) {
 async function handleTalk(typeKey, label){
   if (state.busy) return;
   state.busy = true;
+  setCategoryButtonsEnabled(false);
   try{
     if (CLEAR_LOG_ON_NEW) $("#log").innerHTML = "";
 
@@ -375,6 +376,7 @@ async function handleTalk(typeKey, label){
     applyEffect(item.effect);
   } finally {
     state.busy = false;
+    setCategoryButtonsEnabled(true);
   }
 }
 
@@ -415,6 +417,13 @@ function bindDebug() {
   $("#clearLog").addEventListener("click", () => $("#log").innerHTML = "");
   $("#resetState").addEventListener("click", () => {
     state.affection = 0; state.tension = "mid"; persist(); updateStatusUI();
+  });
+}
+
+function setCategoryButtonsEnabled(enabled){
+  document.querySelectorAll('#buttons button').forEach(b=>{
+    b.disabled = !enabled;
+    b.setAttribute('aria-disabled', String(!enabled));
   });
 }
 

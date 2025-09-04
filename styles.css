@@ -1,135 +1,134 @@
+/* ==================================================================
+   styles.css
+   ================================================================== */
+
 :root{
-  --bg:#0f1115; --panel:#171a21; --panel2:#1d212a; --text:#e8eef8; --muted:#a7b0c2;
-  --accent:#7aa2ff; --accent2:#ffd166; --good:#6ee7b7; --bad:#f87171;
+  /* 色と寸法 */
+  --bg:#0f1115;
+  --panel:#171a21;
+  --panel2:#1d212a;
+  --text:#e8eef8;
+  --muted:#a7b0c2;
+  --accent:#7aa2ff;
+  --good:#6ee7b7;
+  --bad:#f87171;
+
+  /* 画像（縦横比 442:786 ≒ 0.562）をさらに小さく */
+  --portrait-w: 260px;
+  --portrait-h: 464px; /* 260 / 0.56 ≒ 464 */
+
+  /* 左カラムの 3x3 ボタンの1段あたりの高さ（“縦は低め”のキモ） */
+  --left-btn-h: 52px;
+
+  /* ヘッダ/フッタ高さ（レイアウト計算用） */
+  --topbar-h: 56px;
+  --footer-h: 28px;
+
+  --bubble-enter-ms: 160ms;
+  --bubble-ease: cubic-bezier(.2,.85,.35,1);
 }
-*{box-sizing:border-box}
-html,body{height:100%}
+
+*{ box-sizing:border-box; }
+html,body{ height:100%; }
 body{
-  margin:0; font-family:system-ui, -apple-system, "Segoe UI", Meiryo, sans-serif;
-  color:var(--text); background:linear-gradient(180deg,#0e1016 0%,#0b0d12 100%);
+  margin:0;
+  color:var(--text);
+  background:linear-gradient(180deg,#0e1016 0%,#0b0d12 100%);
+  overflow:hidden; /* ← ページ自体はスクロールしない */
+  font-family:system-ui,-apple-system,"Segoe UI",Meiryo,"Hiragino Kaku Gothic ProN","Noto Sans JP",sans-serif;
 }
+
+/* ヘッダ/フッタ */
 .topbar{
   display:flex; align-items:center; justify-content:space-between;
-  padding:10px 16px; background:var(--panel); border-bottom:1px solid #222835;
+  height:var(--topbar-h); padding:6px 12px;
+  background:var(--panel); border-bottom:1px solid #222835;
 }
-.brand{font-weight:700; letter-spacing:0.5px}
-.status{display:flex; gap:24px; align-items:center}
+.brand{font-weight:700; letter-spacing:.5px}
+.status{display:flex; gap:14px; align-items:center}
 .meter label{font-size:12px; color:var(--muted)}
-.meter .bar{width:240px; height:8px; background:#202633; border-radius:999px; overflow:hidden; margin:4px 0}
+.meter .bar{width:180px; height:8px; background:#202633; border-radius:999px; overflow:hidden; margin:4px 0}
 #affectionBar{height:100%; width:0%; background:linear-gradient(90deg,#5ad1ff,#7aa2ff); transition:width .2s}
 .tier{color:var(--muted)}
-.tension label{font-size:12px; color:var(--muted)}
-.badge{padding:4px 10px; border-radius:999px; font-weight:700;}
+.badge{padding:2px 8px; border-radius:999px; font-weight:700;}
 .badge-low{background:#2a1d2b; color:#ff79a1}
 .badge-mid{background:#1c2430; color:#7aa2ff}
 .badge-high{background:#1c2a22; color:#5ae0a2}
 
-.layout{
-  display:grid; grid-template-columns: 360px 1fr; gap:16px; padding:16px;
+.foot{
+  display:flex; align-items:center; justify-content:center;
+  height:var(--footer-h); padding:0 12px; color:var(--muted);
 }
+
+/* 2カラム: 左(画像+3x3), 右(ログ) — 1画面に収める */
+.layout{
+  display:grid;
+  grid-template-columns:max-content 1fr;
+  gap:14px;
+  padding:12px;
+  height:calc(100vh - var(--topbar-h) - var(--footer-h));
+  min-height:0;
+}
+
+/* 左カラム */
 .portrait{
   background:var(--panel); border:1px solid #222835; border-radius:14px;
-  display:flex; align-items:center; justify-content:center; padding:12px;
+  padding:10px; display:flex; flex-direction:column; align-items:center; gap:8px;
+  height:100%; /* ← 右と同じく縦いっぱいを割り当てる */
+  min-height:0;
 }
-.portrait img{max-width:100%; border-radius:10px; box-shadow:0 12px 40px rgba(0,0,0,.35)}
+.portrait-frame{
+  /* 画像は「最大でも固定サイズ」、残りが足りなければ縮む */
+  width:var(--portrait-w);
+  height:var(--portrait-h);
+  max-height:calc(100% - (var(--left-btn-h) * 3 + 12px) - 8px - 2px - 20px);
+  /*          ↑ボタン3段の高さ  ↑行間  ↑画像とボタンの間隔  ↑枠線  ↑上下padding  */
+  display:flex; align-items:center; justify-content:center; position:relative;
+  border-radius:10px; overflow:hidden;
+}
+.portrait img{
+  width:100%; height:100%;
+  object-fit: contain;   /* ← cover から contain に */
+  background:#0003;      /* 余白が出るときの台色（お好みで） */
+  border-radius:10px; box-shadow:0 12px 40px rgba(0,0,0,.35);
+}
+.size-badge{
+  position:absolute; top:6px; left:6px; padding:2px 8px; font-size:12px; line-height:1.6;
+  color:#e8eef8; background:rgba(0,0,0,.55); border:1px solid #333a; border-radius:999px; pointer-events:none;
+}
 
-.ui{display:flex; flex-direction:column; gap:16px}
-.buttons{
-  display:grid; grid-template-columns:repeat(3,1fr); gap:10px;
+/* 3x3 ボタン（確実に grid にするため !important を付与） */
+.portrait .left-buttons{
+  width:var(--portrait-w);
+  display:grid !important;
+  grid-template-columns:repeat(3, minmax(0,1fr)) !important;
+  grid-auto-rows:var(--left-btn-h);
+  gap:6px;
 }
-.buttons button{
-  padding:14px 10px; border-radius:12px; border:1px solid #23293a;
+.portrait .left-buttons button{
+  padding:6px; border-radius:10px; border:1px solid #23293a;
   background:var(--panel2); color:var(--text); cursor:pointer; font-weight:700;
+  display:flex; align-items:center; justify-content:center; flex-direction:column;
   transition:transform .06s ease, box-shadow .06s ease, background .2s;
 }
-.buttons button:hover{transform:translateY(-1px); box-shadow:0 8px 20px rgba(0,0,0,.25)}
-.buttons button:active{transform:translateY(0)}
+.portrait .left-buttons button:hover{ transform:translateY(-1px); box-shadow:0 8px 20px rgba(0,0,0,.25) }
+.portrait .left-buttons .emoji{ font-size:18px; line-height:1 }
+.portrait .left-buttons .label{ font-size:11px; opacity:.95 }
+
+/* 右カラム（会話ログを縦いっぱい、内部スクロール） */
+.ui{ display:flex; flex-direction:column; height:100%; min-height:0; }
 .dialog{
-  background:var(--panel); border:1px solid #222835; border-radius:14px; padding:12px;
+  background:var(--panel); border:1px solid #222835; border-radius:14px;
+  padding:10px; display:flex; flex-direction:column; gap:8px;
+  flex:1 1 auto; min-height:0;
 }
 .log{
-  height:260px; overflow:auto; padding:8px; background:#0f141c; border-radius:8px; border:1px solid #202636;
-}
-.bubble{padding:8px 10px; margin:8px 0; border-radius:10px; width:max-content; max-width:100%}
-.user{background:#192538; border:1px solid #233650}
-.npc{background:#1a2a1f; border:1px solid #25422e}
-.system{background:#2a2333; border:1px solid #3b2f4b}
-.meta{color:var(--muted); font-size:12px}
-.inputRow{display:flex; justify-content:flex-end; margin-top:8px; gap:8px}
-button.secondary{background:#11161f; border-color:#2a3448; color:#cfd7e7}
-button.danger{background:#2a1616; border-color:#4c2626; color:#ffb4b4}
-
-.debug{background:var(--panel); border:1px solid #222835; border-radius:14px; padding:10px}
-.debug-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:10px}
-.debug .row{display:flex; gap:6px; align-items:center}
-.debug input{width:80px; padding:6px 8px; border-radius:8px; border:1px solid #30384a; background:#0e1420; color:#e8eef8}
-.footer, .foot{padding:8px 16px; color:var(--muted); text-align:center}
-/* 絵文字ボタン */
-.buttons button.iconbtn{
-  display:flex; flex-direction:column; align-items:center; justify-content:center;
-  gap:6px; padding-block:18px; font-weight:700; text-align:center;
-}
-.buttons .emoji{ font-size:28px; line-height:1; }
-.buttons .label{ font-size:14px; opacity:.95; }
-
-/* 画面幅広めなら少し大きく */
-@media (min-width: 720px){
-  .buttons .emoji{ font-size:34px; }
+  flex:1 1 auto; min-height:0; overflow:auto;
+  padding:8px; background:#0f141c; border-radius:8px; border:1px solid #202636;
 }
 
-/* （任意）テキストを隠して絵文字だけにしたい時 */
-.icon-only .buttons .label{ display:none; }
-
-/* ===== Compact Mode (1024x768想定) ===== */
-body.compact { /* 画面が広くても詰めて表示 */
-  max-width: 1024px;
-  margin: 0 auto;
-}
-
-body.compact .topbar{
-  padding:6px 12px;
-}
-body.compact .status{ gap:16px }
-body.compact .meter .bar{ width:180px; height:6px }
-body.compact .badge{ padding:2px 8px; font-size:12px }
-
-body.compact .layout{
-  grid-template-columns: 280px 1fr;
-  gap:12px;
-  padding:12px;
-}
-body.compact .portrait{ padding:8px; border-radius:10px }
-body.compact .portrait img{ border-radius:8px }
-
-body.compact .buttons{
-  gap:8px;
-  grid-template-columns: repeat(3, 1fr);
-}
-body.compact .buttons button{
-  padding:10px 8px;
-  border-radius:10px;
-}
-body.compact .buttons .emoji{ font-size:22px }
-body.compact .buttons .label{ font-size:12px }
-
-body.compact .dialog{ padding:10px; border-radius:10px }
-body.compact .log{
-  height:170px;            /* 260→170に圧縮 */
-  padding:6px;
-}
-body.compact .bubble{ padding:6px 8px; margin:6px 0 }
-body.compact .meta{ font-size:11px }
-
-body.compact .debug{ padding:8px; border-radius:10px }
-body.compact .debug-grid{ gap:8px }
-body.compact .debug input{ width:70px; padding:4px 6px }
-/* 考え中バブルは少し薄く */
-.bubble.thinking{ opacity:.8; font-style:italic }
-
-/* ===== 選択肢 ===== */
-.choices{
-  display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-top:8px;
-}
+/* 選択肢 */
+.choices{ display:grid; grid-template-columns:repeat(2,1fr); gap:8px }
 .choices button{
   padding:10px; border-radius:10px; border:1px solid #233650;
   background:#192538; color:#e8eef8; cursor:pointer; font-weight:700;
@@ -137,5 +136,61 @@ body.compact .debug input{ width:70px; padding:4px 6px }
 }
 .choices button:hover{ transform:translateY(-1px); box-shadow:0 8px 20px rgba(0,0,0,.25) }
 
-/* Compact調整 */
-body.compact .choices button{ padding:8px; font-size:14px }
+/* 吹き出し */
+.bubble{
+  padding:8px 10px; margin:8px 0; border-radius:10px;
+  width:max-content; max-width:100%;
+  /* ふわっと */
+  opacity: 1; /* ← thinkingと分けるため初期値は1にしておく */
+}
+.bubble:not(.thinking){
+  opacity: 0;
+  transform: translateY(6px) scale(.98);
+  animation: bubbleIn var(--bubble-enter-ms) var(--bubble-ease) forwards;
+  will-change: transform, opacity;
+  box-shadow: 0 6px 18px rgba(0,0,0,.22);
+}
+.user{ background:#192538; border:1px solid #233650 }
+.npc{ background:#1a2a1f; border:1px solid #25422e }
+.system{ background:#2a2333; border:1px solid #3b2f4b }
+.meta{
+  color:var(--muted);
+  font-size:12px;
+  margin-top:-6px;
+  opacity:.85;
+  animation: metaIn 180ms var(--bubble-ease) both;
+}
+.bubble.thinking{
+  opacity:.85;
+  font-style:italic;
+  animation: none;
+}
+
+/* 汎用ボタン */
+button{ font:inherit }
+button.secondary{ background:#11161f; border:1px solid #2a3448; color:#cfd7e7; padding:8px 10px; border-radius:10px; cursor:pointer }
+button.danger{ background:#2a1616; border:1px solid #4c2626; color:#ffb4b4; padding:8px 10px; border-radius:10px; cursor:pointer }
+button.secondary:hover, button.danger:hover{ filter:brightness(1.08) }
+
+/* バブルアニメーション */
+@keyframes bubbleIn {
+  from { opacity: 0; transform: translateY(6px) scale(.98); }
+  to   { opacity: 1; transform: translateY(0)   scale(1);   }
+}
+@keyframes metaIn {
+  from { opacity: 0; transform: translateY(2px); }
+  to   { opacity: .85; transform: none; }
+}
+
+/* 会話中（busy）のカテゴリボタン見た目 */
+.left-buttons button:disabled{
+  opacity: .45;
+  filter: grayscale(25%);
+  cursor: not-allowed;
+  transform: none !important;
+  box-shadow: none !important;
+}
+.left-buttons button:disabled .emoji,
+.left-buttons button:disabled .label{
+  opacity: .85;
+}
