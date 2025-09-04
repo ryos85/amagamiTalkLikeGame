@@ -212,8 +212,8 @@ button.secondary:hover, button.danger:hover{ filter:brightness(1.08) }
 
 /* ドキドキ度バーの微ゆらぎ */
 @keyframes gentle-wobble {
-  from { transform: translateX(-10px); }
-  to   { transform: translateX( 10px); }
+  from { transform: translateX(-3px); }
+  to   { transform: translateX( 3px); }
 }
 #affectionBar {
   transform-origin: left center;
